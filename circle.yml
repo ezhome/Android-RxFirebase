@@ -1,0 +1,17 @@
+machine:
+  environment:
+    ADB_INSTALL_TIMEOUT: "10"
+
+dependencies:
+  pre:
+    - echo y | android update sdk --no-ui --all --filter tools
+    - echo y | android update sdk --no-ui --all --filter android-23,build-tools-23.0.3,build-tools-23.0.3
+    - echo y | android update sdk --no-ui --all --filter extra-google-m2repository,extra-android-m2repository
+    - chmod +x gradlew
+
+test:
+  override:
+    - ./gradlew clean check
+    - ./gradlew assembleRelease
+    # run tests
+    - ./gradlew test -PdisablePreDex

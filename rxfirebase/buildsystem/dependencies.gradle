@@ -1,0 +1,32 @@
+ext {
+  // Android versions
+  androidMinSdkVersion = 16
+  androidTargetSdkVersion = 23
+  androidCompileSdkVersion = 23
+  androidBuildToolsVersion = '23.0.3'
+
+  //Firebase
+  firebaseVersion = '2.5.2+'
+
+  //RxJava
+  rxJavaVersion = '1.1.7'
+
+  //Test
+  jUnitVersion = '4.12'
+  robolectricVersion = '3.0'
+  assertJVersion = '1.7.1'
+  mockitoVersion = '1.9.5'
+
+  libraryDependencies = [
+      firebase:           "com.firebase:firebase-client-android:${firebaseVersion}",
+      rxJava:             "io.reactivex:rxjava:${rxJavaVersion}",
+  ]
+
+  libraryTestDependencies = [
+      junit:              "junit:junit:${jUnitVersion}",
+      mockito:            "org.mockito:mockito-core:${mockitoVersion}",
+      assertj:            "org.assertj:assertj-core:${assertJVersion}",
+      robolectric:        "org.robolectric:robolectric:${robolectricVersion}"
+  ]
+
+}

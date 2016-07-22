@@ -1,0 +1,8 @@
+publish {
+  userOrg = 'ezhome'
+  groupId = 'com.ezhome'
+  artifactId = 'rxfirebase'
+  publishVersion = '1.0.0'
+  desc = 'An RxJava implementation of Firebase Android client.'
+  website = 'https://github.com/ezhome/Android-RxFirebase'
+}

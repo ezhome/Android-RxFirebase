@@ -6,6 +6,7 @@ package com.ezhome.rxfirebase.exception;
 public class FirebaseAuthProviderDisabledException extends Exception {
 
   public FirebaseAuthProviderDisabledException() {
+    super();
   }
 
   public FirebaseAuthProviderDisabledException(String detailMessage) {

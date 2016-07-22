@@ -1,6 +1,17 @@
+buildscript {
+  repositories {
+    jcenter()
+  }
+  dependencies {
+    classpath 'com.novoda:bintray-release:0.3.4'
+  }
+}
+
 apply plugin: 'com.android.library'
 apply from: 'buildsystem/dependencies.gradle'
 apply from: 'buildsystem/version.gradle'
+apply plugin: 'com.novoda.bintray-release'
+apply from: 'buildsystem/publish.gradle'
 
 android {
 

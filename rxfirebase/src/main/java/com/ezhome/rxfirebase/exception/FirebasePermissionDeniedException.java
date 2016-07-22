@@ -7,6 +7,7 @@ package com.ezhome.rxfirebase.exception;
 public class FirebasePermissionDeniedException extends Exception {
 
   public FirebasePermissionDeniedException() {
+    super();
   }
 
   public FirebasePermissionDeniedException(String detailMessage) {

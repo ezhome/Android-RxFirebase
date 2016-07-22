@@ -6,6 +6,7 @@ package com.ezhome.rxfirebase.exception;
 public class FirebaseOperationFailedException extends Exception {
 
   public FirebaseOperationFailedException() {
+    super();
   }
 
   public FirebaseOperationFailedException(String detailMessage) {

@@ -6,6 +6,7 @@ package com.ezhome.rxfirebase.exception;
 public class FirebaseExpiredTokenException extends Exception {
 
   public FirebaseExpiredTokenException() {
+    super();
   }
 
   public FirebaseExpiredTokenException(String detailMessage) {

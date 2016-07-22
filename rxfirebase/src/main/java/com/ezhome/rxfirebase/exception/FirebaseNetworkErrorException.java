@@ -6,6 +6,7 @@ package com.ezhome.rxfirebase.exception;
 public class FirebaseNetworkErrorException extends Exception {
 
   public FirebaseNetworkErrorException() {
+    super();
   }
 
   public FirebaseNetworkErrorException(String detailMessage) {

@@ -7,6 +7,7 @@ package com.ezhome.rxfirebase.exception;
 public class FirebaseDisconnectedException extends Exception {
 
   public FirebaseDisconnectedException() {
+    super();
   }
 
   public FirebaseDisconnectedException(String detailMessage) {

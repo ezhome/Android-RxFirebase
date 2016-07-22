@@ -3,6 +3,7 @@ package com.ezhome.rxfirebase.exception;
 public class FirebaseGeneralException extends Exception {
 
   public FirebaseGeneralException() {
+    super();
   }
 
   public FirebaseGeneralException(String detailMessage) {

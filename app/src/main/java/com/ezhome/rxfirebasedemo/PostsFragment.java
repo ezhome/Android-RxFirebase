@@ -85,6 +85,7 @@ public class PostsFragment extends Fragment {
    * @param isVisible {@link Boolean} VISIBLE: true | INVISIBLE: false
    */
   private void showProgress(boolean isVisible) {
+    this.progressBar.clearAnimation();
     this.progressBar.setVisibility(isVisible ? View.VISIBLE : View.GONE);
     this.getActivity().setProgressBarIndeterminateVisibility(isVisible);
   }

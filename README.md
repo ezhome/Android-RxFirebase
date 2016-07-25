@@ -17,7 +17,32 @@ Contents
 
 Usage
 -----
-TODO
+
+```java
+    final Firebase firebaseRef = new Firebase("https://docs-examples.firebaseio.com/web/saving-data/fireblog/posts");
+    RxFirebase.getInstance().observeValueEvent(firebaseRef).subscribe(new GetPostsSubscriber());
+  
+    private final class GetPostsSubscriber extends Subscriber<DataSnapshot> {
+      @Override public void onCompleted() {
+        PostsFragment.this.showProgress(false);
+      }
+    
+      @Override public void onError(Throwable e) {
+        PostsFragment.this.showProgress(false);
+        PostsFragment.this.showError(e.getMessage());
+      }
+    
+      @SuppressWarnings("unchecked") @Override public void onNext(DataSnapshot dataSnapshot) {
+        List<BlogPostEntity> blogPostEntities = new ArrayList<>();
+        for (DataSnapshot childDataSnapshot : dataSnapshot.getChildren()) {
+          blogPostEntities.add(childDataSnapshot.getValue(BlogPostEntity.class));
+        }
+        PostsFragment.this.renderBlogPosts(blogPostEntities);
+      }
+    }
+```     
+
+Check the example application [here](https://github.com/ezhome/Android-RxFirebase/tree/master/app)
 
 Download
 --------

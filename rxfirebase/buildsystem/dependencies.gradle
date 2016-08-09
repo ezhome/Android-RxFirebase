@@ -6,7 +6,7 @@ ext {
   androidBuildToolsVersion = '23.0.3'
 
   //Firebase
-  firebaseVersion = '2.5.2+'
+  firebaseVersion = '9.2.1'
 
   //RxJava
   rxJavaVersion = '1.1.7'
@@ -18,7 +18,8 @@ ext {
   mockitoVersion = '1.9.5'
 
   libraryDependencies = [
-      firebase:           "com.firebase:firebase-client-android:${firebaseVersion}",
+      firebaseDatabase:   "com.google.firebase:firebase-database:${firebaseVersion}",
+      firebaseAuth:       "com.google.firebase:firebase-auth:${firebaseVersion}",
       rxJava:             "io.reactivex:rxjava:${rxJavaVersion}",
   ]
 

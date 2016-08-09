@@ -13,26 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ezhome.rxfirebase.exception;
+package com.ezhome.rxfirebase;
 
 /**
- * Raised when the operation could not be performed due to a network error.
+ * Standard firebase nodes
  */
-public class FirebaseNetworkErrorException extends Exception {
+public final class FirebaseDatabaseNodes {
 
-  public FirebaseNetworkErrorException() {
-    super();
-  }
-
-  public FirebaseNetworkErrorException(String detailMessage) {
-    super(detailMessage);
-  }
-
-  public FirebaseNetworkErrorException(String detailMessage, Throwable throwable) {
-    super(detailMessage, throwable);
-  }
-
-  public FirebaseNetworkErrorException(Throwable throwable) {
-    super(throwable);
-  }
+  public static final String NODE_CONNECTED = "/.info/connected";
 }

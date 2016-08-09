@@ -1,18 +1,3 @@
-/**
- * Copyright 2016 Ezhome Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.ezhome.rxfirebase;
 
 import com.ezhome.rxfirebase.FirebaseChildEvent.EventType;
@@ -38,47 +23,10 @@ import rx.subscriptions.Subscriptions;
  * The class is used as wrapper to firebase functionlity with
  * RxJava
  */
-public class RxFirebase {
+public final class RxFirebaseDatabase {
 
-  private static Boolean connected = false;
-
-  //Prevent constructor initialisation
-  private RxFirebase() {
-
-  }
-
-  /**
-   * Checks the Firebase's connection State
-   *
-   * @param firebaseRef {@link DatabaseReference} this is reference of a Firebase Query
-   * @return an {@link rx.Observable} of {@link Boolean}
-   */
-  public static Observable<Boolean> observeConnectionState(final DatabaseReference firebaseRef) {
-    return Observable.create(new Observable.OnSubscribe<Boolean>() {
-      @Override public void call(final Subscriber<? super Boolean> subscriber) {
-        final ValueEventListener listener = new ValueEventListener() {
-          @Override public void onDataChange(DataSnapshot snapshot) {
-            boolean newConnected = snapshot.getValue(Boolean.class);
-            if (connected != newConnected) {
-              connected = newConnected;
-              subscriber.onNext(connected);
-            }
-          }
-
-          @Override public void onCancelled(DatabaseError error) {
-            attachErrorHandler(subscriber, error);
-          }
-        };
-        firebaseRef.addValueEventListener(listener);
-
-        // When the subscription is cancelled, remove the listener
-        subscriber.add(Subscriptions.create(new Action0() {
-          @Override public void call() {
-            firebaseRef.removeEventListener(listener);
-          }
-        }));
-      }
-    });
+  private RxFirebaseDatabase() {
+   //empty constructor, prevent initialisation
   }
 
   /**
@@ -101,8 +49,8 @@ public class RxFirebase {
             subscriber.onCompleted();
           }
 
-          @Override public void onCancelled(DatabaseError firebaseError) {
-            attachErrorHandler(subscriber, firebaseError);
+          @Override public void onCancelled(DatabaseError DatabaseError) {
+            attachErrorHandler(subscriber, DatabaseError);
           }
         });
         ref.setValue(object);
@@ -229,13 +177,13 @@ public class RxFirebase {
   }
 
   /**
-   * Creates an observable only for the child added method
+   * Creates an observable only for the child changed method
    *
    * @param firebaseRef {@link Query} this is reference of a Firebase Query
    * @return an {@link rx.Observable} of {@link FirebaseChildEvent}
    * to use
    */
-  public static Observable<FirebaseChildEvent> observeChildAdded(final Query firebaseRef) {
+  public static Observable<FirebaseChildEvent> observeChildAdded(Query firebaseRef) {
     return observeChildEvent(firebaseRef).filter(filterChildEvent(EventType.ADDED));
   }
 
@@ -291,29 +239,28 @@ public class RxFirebase {
    * This method add to subsriber the proper error according to the
    *
    * @param subscriber {@link rx.Subscriber}
-   * @param databaseError {@link DatabaseError}
+   * @param error {@link DatabaseError}
    * @param <T> generic subscriber
    */
-  private static <T> void attachErrorHandler(Subscriber<T> subscriber,
-      DatabaseError databaseError) {
-    switch (databaseError.getCode()) {
+  private static <T> void attachErrorHandler(Subscriber<T> subscriber, DatabaseError error) {
+    switch (error.getCode()) {
       case DatabaseError.INVALID_TOKEN:
-        subscriber.onError(new FirebaseInvalidTokenException(databaseError.getMessage()));
+        subscriber.onError(new FirebaseInvalidTokenException(error.getMessage()));
         break;
       case DatabaseError.EXPIRED_TOKEN:
-        subscriber.onError(new FirebaseExpiredTokenException(databaseError.getMessage()));
+        subscriber.onError(new FirebaseExpiredTokenException(error.getMessage()));
         break;
       case DatabaseError.NETWORK_ERROR:
-        subscriber.onError(new FirebaseNetworkErrorException(databaseError.getMessage()));
+        subscriber.onError(new FirebaseNetworkErrorException(error.getMessage()));
         break;
       case DatabaseError.PERMISSION_DENIED:
-        subscriber.onError(new FirebasePermissionDeniedException(databaseError.getMessage()));
+        subscriber.onError(new FirebasePermissionDeniedException(error.getMessage()));
         break;
       case DatabaseError.OPERATION_FAILED:
-        subscriber.onError(new FirebaseOperationFailedException(databaseError.getMessage()));
+        subscriber.onError(new FirebaseOperationFailedException(error.getMessage()));
         break;
       default:
-        subscriber.onError(new FirebaseGeneralException(databaseError.getMessage()));
+        subscriber.onError(new FirebaseGeneralException(error.getMessage()));
     }
   }
 }

@@ -12,10 +12,11 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import com.ezhome.rxfirebase.RxFirebase;
+import com.ezhome.rxfirebase.RxFirebaseDatabase;
 import com.ezhome.rxfirebasedemo.model.BlogPostEntity;
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -27,8 +28,8 @@ import rx.Subscriber;
 public class PostsFragment extends Fragment {
 
   //For example purposes
-  private final Firebase firebaseRef =
-      new Firebase("https://docs-examples.firebaseio.com/web/saving-data/fireblog/posts");
+  private final DatabaseReference firebaseRef = FirebaseDatabase.getInstance()
+      .getReferenceFromUrl("https://docs-examples.firebaseio.com/web/saving-data/fireblog/posts");
 
   //Adapter
   private BlogPostsAdapter blogPostsAdapter;
@@ -66,7 +67,7 @@ public class PostsFragment extends Fragment {
    */
   private void loadPosts() {
     PostsFragment.this.showProgress(true);
-    RxFirebase.getInstance().observeValueEvent(firebaseRef).subscribe(new GetPostsSubscriber());
+    RxFirebaseDatabase.observeValueEvent(firebaseRef).subscribe(new GetPostsSubscriber());
   }
 
   /**
@@ -100,7 +101,7 @@ public class PostsFragment extends Fragment {
   }
 
   /**
-   * Subscriber for {@link com.ezhome.rxfirebase.RxFirebase} query
+   * Subscriber for {@link com.ezhome.rxfirebase.RxFirebaseDatabase} query
    */
   private final class GetPostsSubscriber extends Subscriber<DataSnapshot> {
     @Override public void onCompleted() {

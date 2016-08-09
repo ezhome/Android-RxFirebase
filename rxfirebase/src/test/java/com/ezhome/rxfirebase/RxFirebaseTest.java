@@ -1,3 +1,18 @@
+/**
+ * Copyright 2016 Ezhome Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.ezhome.rxfirebase;
 
 import com.firebase.client.DataSnapshot;
@@ -19,8 +34,8 @@ import static org.mockito.Mockito.when;
 
 public class RxFirebaseTest extends ApplicationTestCase {
 
-  private RxFirebase rxFirebase;
-  @Mock private RxFirebase spyRxFirebase;
+  private RxFirebaseDatabase rxFirebase;
+  @Mock private RxFirebaseDatabase spyRxFirebase;
   @Mock private Firebase mockRef;
   @Mock private DataSnapshot mockDataSnapshot;
   @Mock private FirebaseChildEvent mockFirebaseChildEvent;
@@ -29,7 +44,7 @@ public class RxFirebaseTest extends ApplicationTestCase {
 
   @Before public void setUp() {
     MockitoAnnotations.initMocks(this);
-    rxFirebase = RxFirebase.getInstance();
+    rxFirebase = RxFirebaseDatabase.getInstance();
     spyRxFirebase = spy(rxFirebase);
   }
 
@@ -69,7 +84,8 @@ public class RxFirebaseTest extends ApplicationTestCase {
   }
 
   @Test public void testObserveChildValue() {
-    when(spyRxFirebase.observeChildEvent(mockRef)).thenReturn(Observable.just(mockFirebaseChildEvent));
+    when(spyRxFirebase.observeChildEvent(mockRef)).thenReturn(
+        Observable.just(mockFirebaseChildEvent));
 
     TestSubscriber<FirebaseChildEvent> testSubscriber = new TestSubscriber<>();
     spyRxFirebase.observeChildEvent(mockRef)
@@ -100,7 +116,8 @@ public class RxFirebaseTest extends ApplicationTestCase {
 
   @Test public void testObserveChildAdded() {
     mockFirebaseChildEvent.setEventType(FirebaseChildEvent.EventType.ADDED);
-    when(spyRxFirebase.observeChildAdded(mockRef)).thenReturn(Observable.just(mockFirebaseChildEvent));
+    when(spyRxFirebase.observeChildAdded(mockRef)).thenReturn(
+        Observable.just(mockFirebaseChildEvent));
 
     TestSubscriber<FirebaseChildEvent> testSubscriber = new TestSubscriber<>();
     spyRxFirebase.observeChildAdded(mockRef)
@@ -116,7 +133,8 @@ public class RxFirebaseTest extends ApplicationTestCase {
 
   @Test public void testObserveChildRemoved() {
     mockFirebaseChildEvent.setEventType(FirebaseChildEvent.EventType.REMOVED);
-    when(spyRxFirebase.observeChildRemoved(mockRef)).thenReturn(Observable.just(mockFirebaseChildEvent));
+    when(spyRxFirebase.observeChildRemoved(mockRef)).thenReturn(
+        Observable.just(mockFirebaseChildEvent));
 
     TestSubscriber<FirebaseChildEvent> testSubscriber = new TestSubscriber<>();
     spyRxFirebase.observeChildRemoved(mockRef)
@@ -132,7 +150,8 @@ public class RxFirebaseTest extends ApplicationTestCase {
 
   @Test public void testObserveChildChanged() {
     mockFirebaseChildEvent.setEventType(FirebaseChildEvent.EventType.CHANGED);
-    when(spyRxFirebase.observeChildChanged(mockRef)).thenReturn(Observable.just(mockFirebaseChildEvent));
+    when(spyRxFirebase.observeChildChanged(mockRef)).thenReturn(
+        Observable.just(mockFirebaseChildEvent));
 
     TestSubscriber<FirebaseChildEvent> testSubscriber = new TestSubscriber<>();
     spyRxFirebase.observeChildChanged(mockRef)
@@ -148,7 +167,8 @@ public class RxFirebaseTest extends ApplicationTestCase {
 
   @Test public void testObserveChildMoved() {
     mockFirebaseChildEvent.setEventType(FirebaseChildEvent.EventType.MOVED);
-    when(spyRxFirebase.observeChildMoved(mockRef)).thenReturn(Observable.just(mockFirebaseChildEvent));
+    when(spyRxFirebase.observeChildMoved(mockRef)).thenReturn(
+        Observable.just(mockFirebaseChildEvent));
 
     TestSubscriber<FirebaseChildEvent> testSubscriber = new TestSubscriber<>();
     spyRxFirebase.observeChildMoved(mockRef)

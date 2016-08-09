@@ -41,7 +41,7 @@ import static com.firebase.client.Firebase.AuthResultHandler;
 import static com.firebase.client.Firebase.AuthStateListener;
 
 /**
- * The class is used as wrapper to firebase functionlity with
+ * The class is used as wrapper to firebase functionality with
  * RxJava
  */
 public class RxFirebase {

@@ -13,26 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ezhome.rxfirebase.exception;
+package com.ezhome.rxfirebase2.exception;
 
 /**
- * Raised when the specified authentication token is invalid.
+ * This exception occurred when an operation has been failed
  */
-public class FirebaseInvalidTokenException extends Exception {
+public class FirebaseOperationFailedException extends Exception {
 
-  public FirebaseInvalidTokenException() {
+  public FirebaseOperationFailedException() {
     super();
   }
 
-  public FirebaseInvalidTokenException(String detailMessage) {
+  public FirebaseOperationFailedException(String detailMessage) {
     super(detailMessage);
   }
 
-  public FirebaseInvalidTokenException(String detailMessage, Throwable throwable) {
+  public FirebaseOperationFailedException(String detailMessage, Throwable throwable) {
     super(detailMessage, throwable);
   }
 
-  public FirebaseInvalidTokenException(Throwable throwable) {
+  public FirebaseOperationFailedException(Throwable throwable) {
     super(throwable);
   }
 }

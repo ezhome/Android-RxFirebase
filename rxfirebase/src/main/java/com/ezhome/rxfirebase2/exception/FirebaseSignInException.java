@@ -13,23 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ezhome.rxfirebase.exception;
+package com.ezhome.rxfirebase2.exception;
 
 /**
  * This exception occurred when something went wrong during
  * the logout process
  */
-public class FirebaseLogoutException extends Exception {
+public class FirebaseSignInException extends Exception {
 
-  public FirebaseLogoutException(String detailMessage) {
+  public FirebaseSignInException() {
+    super();
+  }
+
+  public FirebaseSignInException(String detailMessage) {
     super(detailMessage);
   }
 
-  public FirebaseLogoutException(String detailMessage, Throwable throwable) {
+  public FirebaseSignInException(String detailMessage, Throwable throwable) {
     super(detailMessage, throwable);
   }
 
-  public FirebaseLogoutException(Throwable throwable) {
+  public FirebaseSignInException(Throwable throwable) {
     super(throwable);
   }
 }

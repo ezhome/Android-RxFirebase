@@ -13,27 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ezhome.rxfirebase.exception;
+package com.ezhome.rxfirebase2.exception;
 
 /**
- * This exception occurred when the firebase is disconnected
- * eg. network is turned off
+ * Raised when the operation could not be performed due to a network error.
  */
-public class FirebaseDisconnectedException extends Exception {
+public class FirebaseNetworkErrorException extends Exception {
 
-  public FirebaseDisconnectedException() {
+  public FirebaseNetworkErrorException() {
     super();
   }
 
-  public FirebaseDisconnectedException(String detailMessage) {
+  public FirebaseNetworkErrorException(String detailMessage) {
     super(detailMessage);
   }
 
-  public FirebaseDisconnectedException(String detailMessage, Throwable throwable) {
+  public FirebaseNetworkErrorException(String detailMessage, Throwable throwable) {
     super(detailMessage, throwable);
   }
 
-  public FirebaseDisconnectedException(Throwable throwable) {
+  public FirebaseNetworkErrorException(Throwable throwable) {
     super(throwable);
   }
 }

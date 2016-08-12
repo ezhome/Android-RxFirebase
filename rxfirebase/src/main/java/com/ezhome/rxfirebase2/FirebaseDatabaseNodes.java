@@ -13,14 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ezhome.rxfirebase;
+package com.ezhome.rxfirebase2;
 
-import android.os.Build;
-import org.junit.runner.RunWith;
-import org.robolectric.RobolectricGradleTestRunner;
-import org.robolectric.annotation.Config;
+/**
+ * Standard firebase nodes
+ */
+public final class FirebaseDatabaseNodes {
 
-@RunWith(value = RobolectricGradleTestRunner.class)
-@Config(application = ApplicationStub.class, constants = BuildConfig.class, sdk = Build.VERSION_CODES.LOLLIPOP)
-public abstract class ApplicationTestCase {
+  public static final String NODE_CONNECTED = "/.info/connected";
 }

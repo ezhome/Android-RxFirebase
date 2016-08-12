@@ -13,12 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ezhome.rxfirebase;
+package com.ezhome.rxfirebase2.exception;
 
 /**
- * Standard firebase collections
+ * Generic exception for Firebase
  */
-public final class ServerFirebaseNodes {
+public class FirebaseGeneralException extends Exception {
 
-  public static final String NODE_CONNECTED = "/.info/connected";
+  public FirebaseGeneralException() {
+    super();
+  }
+
+  public FirebaseGeneralException(String detailMessage) {
+    super(detailMessage);
+  }
+
+  public FirebaseGeneralException(String detailMessage, Throwable throwable) {
+    super(detailMessage, throwable);
+  }
+
+  public FirebaseGeneralException(Throwable throwable) {
+    super(throwable);
+  }
 }

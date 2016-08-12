@@ -17,6 +17,22 @@ Contents
 
 Usage
 -----
+#### Use the project with your own Firebase instance
+
+1. Clone this repository.
+- Create a new project in the [Firebase console](https://console.firebase.google.com/).
+- Click *Add Firebase to your Android app*
+  * provide a **unique package name**
+  * use the same package name for the **applicationId** in your `build.gradle`
+  * insert SHA-1 fingerprint of your debug certificate, otherwise you won't be able to log in
+- Copy the generated *google-services.json* to the `app` folder of your project which will replace the mock google services json file.
+- You should be able to successfully sync the project now.
+- Copy contents of the `./server/database.rules.json` into your *Firebase -> Database -> Rules* and publish them.
+- Import data `./server/sample-data.json` into your *Firebase -> Database* 
+- Change the *Firebase URL path* in this [file](https://github.com/ezhome/Android-RxFirebase/blob/master/app/src/main/java/com/ezhome/rxfirebasedemo/PostsFragment.java#L30)  
+- Build and run the app.
+
+#### Example
 
 ```java
     final Firebase firebaseRef = new Firebase("https://docs-examples.firebaseio.com/web/saving-data/fireblog/posts");
@@ -49,7 +65,7 @@ Download
 The project is available on jCenter. In your app build.gradle (or explicit module) you must add this:
 ```
 dependencies {
-  compile 'com.ezhome:rxfirebase:1.0.0'
+  compile 'com.ezhome:rxfirebase:2.0.0'
 }
 ```
 

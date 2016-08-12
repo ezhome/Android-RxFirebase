@@ -13,27 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ezhome.rxfirebase.exception;
+package com.ezhome.rxfirebase2.exception;
 
 /**
- * Raised when the Firebase returns a permission
- * denied error
+ * This exception occurred when something went wrong during
+ * the logout process
  */
-public class FirebasePermissionDeniedException extends Exception {
+public class FirebaseSignOutException extends Exception {
 
-  public FirebasePermissionDeniedException() {
+  public FirebaseSignOutException() {
     super();
   }
 
-  public FirebasePermissionDeniedException(String detailMessage) {
+  public FirebaseSignOutException(String detailMessage) {
     super(detailMessage);
   }
 
-  public FirebasePermissionDeniedException(String detailMessage, Throwable throwable) {
+  public FirebaseSignOutException(String detailMessage, Throwable throwable) {
     super(detailMessage, throwable);
   }
 
-  public FirebasePermissionDeniedException(Throwable throwable) {
+  public FirebaseSignOutException(Throwable throwable) {
     super(throwable);
   }
 }

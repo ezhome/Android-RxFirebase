@@ -58,7 +58,8 @@ dependencies {
   def libraryTestDependencies = project.ext.libraryTestDependencies
 
   //Data
-  compile libraryDependencies.firebase
+  compile libraryDependencies.firebaseDatabase
+  compile libraryDependencies.firebaseAuth
 
   //Rx
   compile libraryDependencies.rxJava

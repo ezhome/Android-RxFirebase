@@ -1,4 +1,4 @@
-package com.ezhome.rxfirebase;
+package com.ezhome.rxfirebase2;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

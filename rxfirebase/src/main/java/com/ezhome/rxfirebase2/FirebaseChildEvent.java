@@ -13,15 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ezhome.rxfirebase;
+package com.ezhome.rxfirebase2;
 
-import com.firebase.client.DataSnapshot;
+import com.google.firebase.database.DataSnapshot;
 
 /**
- * Created by Spiros I. Oikonomakis on 24/12/15.
- *
  * This class represents a firebase child event when we are
- * using the {@link com.firebase.client.ChildEventListener}
+ * using the Child event listener
  */
 public class FirebaseChildEvent {
 

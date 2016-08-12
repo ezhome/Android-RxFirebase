@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ezhome.rxfirebase;
+package com.ezhome.rxfirebase2;
 
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
+import com.ezhome.rxfirebase2.database.RxFirebaseDatabase;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.Query;
 import java.util.Collections;
 import org.junit.After;
 import org.junit.Before;
@@ -32,11 +33,11 @@ import rx.schedulers.Schedulers;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
-public class RxFirebaseTest extends ApplicationTestCase {
+public class RxFirebaseDatabaseTest extends ApplicationTestCase {
 
   private RxFirebaseDatabase rxFirebase;
-  @Mock private RxFirebaseDatabase spyRxFirebase;
-  @Mock private Firebase mockRef;
+  private RxFirebaseDatabase spyRxFirebase;
+  @Mock private Query mockRef;
   @Mock private DataSnapshot mockDataSnapshot;
   @Mock private FirebaseChildEvent mockFirebaseChildEvent;
 
@@ -51,21 +52,6 @@ public class RxFirebaseTest extends ApplicationTestCase {
   @After public void destroy() {
     rxFirebase = null;
     spyRxFirebase = null;
-  }
-
-  @Test public void testLogout() throws InterruptedException {
-    when(spyRxFirebase.observeLogout(mockRef)).thenReturn(Observable.just(true));
-
-    TestSubscriber<Boolean> testSubscriber = new TestSubscriber<>();
-    spyRxFirebase.observeLogout(mockRef)
-        .subscribeOn(Schedulers.immediate())
-        .subscribe(testSubscriber);
-
-    testSubscriber.assertNoErrors();
-    testSubscriber.assertValueCount(1);
-    testSubscriber.assertReceivedOnNext(Collections.singletonList(true));
-    testSubscriber.assertCompleted();
-    testSubscriber.unsubscribe();
   }
 
   @Test public void testObserveValue() throws InterruptedException {

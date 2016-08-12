@@ -13,14 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ezhome.rxfirebase;
+package com.ezhome.rxfirebase2.exception;
 
-import android.os.Build;
-import org.junit.runner.RunWith;
-import org.robolectric.RobolectricGradleTestRunner;
-import org.robolectric.annotation.Config;
+/**
+ * Generic exception for Firebase
+ */
+public class FirebaseGeneralException extends Exception {
 
-@RunWith(value = RobolectricGradleTestRunner.class)
-@Config(application = ApplicationStub.class, constants = BuildConfig.class, sdk = Build.VERSION_CODES.LOLLIPOP)
-public abstract class ApplicationTestCase {
+  public FirebaseGeneralException() {
+    super();
+  }
+
+  public FirebaseGeneralException(String detailMessage) {
+    super(detailMessage);
+  }
+
+  public FirebaseGeneralException(String detailMessage, Throwable throwable) {
+    super(detailMessage, throwable);
+  }
+
+  public FirebaseGeneralException(Throwable throwable) {
+    super(throwable);
+  }
 }

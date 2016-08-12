@@ -12,7 +12,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import com.ezhome.rxfirebase.RxFirebaseDatabase;
+import com.ezhome.rxfirebase2.database.RxFirebaseDatabase;
 import com.ezhome.rxfirebasedemo.model.BlogPostEntity;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
@@ -29,7 +29,7 @@ public class PostsFragment extends Fragment {
 
   //For example purposes
   private final DatabaseReference firebaseRef = FirebaseDatabase.getInstance()
-      .getReferenceFromUrl("https://docs-examples.firebaseio.com/web/saving-data/fireblog/posts");
+      .getReferenceFromUrl("https://ezhome-example.firebaseio.com/fireblog");
 
   //Adapter
   private BlogPostsAdapter blogPostsAdapter;
@@ -101,7 +101,7 @@ public class PostsFragment extends Fragment {
   }
 
   /**
-   * Subscriber for {@link com.ezhome.rxfirebase.RxFirebaseDatabase} query
+   * Subscriber for {@link RxFirebaseDatabase} query
    */
   private final class GetPostsSubscriber extends Subscriber<DataSnapshot> {
     @Override public void onCompleted() {

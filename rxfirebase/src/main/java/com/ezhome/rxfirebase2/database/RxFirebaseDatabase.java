@@ -1,12 +1,7 @@
-package com.ezhome.rxfirebase;
+package com.ezhome.rxfirebase2.database;
 
-import com.ezhome.rxfirebase.FirebaseChildEvent.EventType;
-import com.ezhome.rxfirebase.exception.FirebaseExpiredTokenException;
-import com.ezhome.rxfirebase.exception.FirebaseGeneralException;
-import com.ezhome.rxfirebase.exception.FirebaseInvalidTokenException;
-import com.ezhome.rxfirebase.exception.FirebaseNetworkErrorException;
-import com.ezhome.rxfirebase.exception.FirebaseOperationFailedException;
-import com.ezhome.rxfirebase.exception.FirebasePermissionDeniedException;
+import com.ezhome.rxfirebase2.FirebaseChildEvent;
+import com.ezhome.rxfirebase2.FirebaseChildEvent.EventType;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -20,13 +15,31 @@ import rx.functions.Func1;
 import rx.subscriptions.Subscriptions;
 
 /**
- * The class is used as wrapper to firebase functionlity with
- * RxJava
+ * The class is used as Decorator to
+ * Firebase Database functionality with RxJava
  */
-public final class RxFirebaseDatabase {
+public class RxFirebaseDatabase {
+
+  public static volatile RxFirebaseDatabase instance;
+
+  /**
+   * Singleton pattern
+   *
+   * @return {@link RxFirebaseDatabase}
+   */
+  public static RxFirebaseDatabase getInstance() {
+    if (instance == null) {
+      synchronized (RxFirebaseDatabase.class) {
+        if (instance == null) {
+          instance = new RxFirebaseDatabase();
+        }
+      }
+    }
+    return instance;
+  }
 
   private RxFirebaseDatabase() {
-   //empty constructor, prevent initialisation
+    //empty constructor, prevent initialisation
   }
 
   /**
@@ -38,7 +51,7 @@ public final class RxFirebaseDatabase {
    * @return an {@link rx.Observable} of the generated key after
    * the object persistence
    */
-  public static Observable<String> observeSetValuePush(final DatabaseReference firebaseRef,
+  public Observable<String> observeSetValuePush(final DatabaseReference firebaseRef,
       final Object object) {
     return Observable.create(new Observable.OnSubscribe<String>() {
       @Override public void call(final Subscriber<? super String> subscriber) {
@@ -49,8 +62,8 @@ public final class RxFirebaseDatabase {
             subscriber.onCompleted();
           }
 
-          @Override public void onCancelled(DatabaseError DatabaseError) {
-            attachErrorHandler(subscriber, DatabaseError);
+          @Override public void onCancelled(DatabaseError error) {
+            FirebaseDatabaseErrorFactory.buildError(subscriber, error);
           }
         });
         ref.setValue(object);
@@ -66,7 +79,7 @@ public final class RxFirebaseDatabase {
    * @param firebaseRef {@link Query} this is reference of a Firebase Query
    * @return an {@link rx.Observable} of datasnapshot to use
    */
-  public static Observable<DataSnapshot> observeValueEvent(final Query firebaseRef) {
+  public Observable<DataSnapshot> observeValueEvent(final Query firebaseRef) {
     return Observable.create(new Observable.OnSubscribe<DataSnapshot>() {
       @Override public void call(final Subscriber<? super DataSnapshot> subscriber) {
         final ValueEventListener listener =
@@ -76,7 +89,7 @@ public final class RxFirebaseDatabase {
               }
 
               @Override public void onCancelled(DatabaseError error) {
-                attachErrorHandler(subscriber, error);
+                FirebaseDatabaseErrorFactory.buildError(subscriber, error);
               }
             });
 
@@ -98,7 +111,7 @@ public final class RxFirebaseDatabase {
    * @param firebaseRef {@link Query} this is reference of a Firebase Query
    * @return an {@link rx.Observable} of datasnapshot to use
    */
-  public static Observable<DataSnapshot> observeSingleValue(final Query firebaseRef) {
+  public Observable<DataSnapshot> observeSingleValue(final Query firebaseRef) {
     return Observable.create(new Observable.OnSubscribe<DataSnapshot>() {
       @Override public void call(final Subscriber<? super DataSnapshot> subscriber) {
         final ValueEventListener listener = new ValueEventListener() {
@@ -108,7 +121,7 @@ public final class RxFirebaseDatabase {
           }
 
           @Override public void onCancelled(DatabaseError error) {
-            attachErrorHandler(subscriber, error);
+            FirebaseDatabaseErrorFactory.buildError(subscriber, error);
           }
         };
 
@@ -133,7 +146,7 @@ public final class RxFirebaseDatabase {
    * @return an {@link rx.Observable} of {@link FirebaseChildEvent}
    * to use
    */
-  public static Observable<FirebaseChildEvent> observeChildEvent(final Query firebaseRef) {
+  public Observable<FirebaseChildEvent> observeChildEvent(final Query firebaseRef) {
     return Observable.create(new Observable.OnSubscribe<FirebaseChildEvent>() {
       @Override public void call(final Subscriber<? super FirebaseChildEvent> subscriber) {
         final ChildEventListener childEventListener =
@@ -162,7 +175,7 @@ public final class RxFirebaseDatabase {
               }
 
               @Override public void onCancelled(DatabaseError error) {
-                attachErrorHandler(subscriber, error);
+                FirebaseDatabaseErrorFactory.buildError(subscriber, error);
               }
             });
         // this is used to remove the listener when the subscriber is
@@ -183,7 +196,7 @@ public final class RxFirebaseDatabase {
    * @return an {@link rx.Observable} of {@link FirebaseChildEvent}
    * to use
    */
-  public static Observable<FirebaseChildEvent> observeChildAdded(Query firebaseRef) {
+  public Observable<FirebaseChildEvent> observeChildAdded(final Query firebaseRef) {
     return observeChildEvent(firebaseRef).filter(filterChildEvent(EventType.ADDED));
   }
 
@@ -194,7 +207,7 @@ public final class RxFirebaseDatabase {
    * @return an {@link rx.Observable} of {@link FirebaseChildEvent}
    * to use
    */
-  public static Observable<FirebaseChildEvent> observeChildChanged(Query firebaseRef) {
+  public Observable<FirebaseChildEvent> observeChildChanged(final Query firebaseRef) {
     return observeChildEvent(firebaseRef).filter(filterChildEvent(EventType.CHANGED));
   }
 
@@ -205,7 +218,7 @@ public final class RxFirebaseDatabase {
    * @return an {@link rx.Observable} of {@link FirebaseChildEvent}
    * to use
    */
-  public static Observable<FirebaseChildEvent> observeChildRemoved(Query firebaseRef) {
+  public Observable<FirebaseChildEvent> observeChildRemoved(final Query firebaseRef) {
     return observeChildEvent(firebaseRef).filter(filterChildEvent(EventType.REMOVED));
   }
 
@@ -216,7 +229,7 @@ public final class RxFirebaseDatabase {
    * @return an {@link rx.Observable} of {@link FirebaseChildEvent}
    * to use
    */
-  public static Observable<FirebaseChildEvent> observeChildMoved(Query firebaseRef) {
+  public Observable<FirebaseChildEvent> observeChildMoved(final Query firebaseRef) {
     return observeChildEvent(firebaseRef).filter(filterChildEvent(EventType.MOVED));
   }
 
@@ -227,40 +240,11 @@ public final class RxFirebaseDatabase {
    * @param type {@link FirebaseChildEvent}
    * @return {@link rx.functions.Func1} a function which returns a boolean if the type are equals
    */
-  private static Func1<FirebaseChildEvent, Boolean> filterChildEvent(final EventType type) {
+  private Func1<FirebaseChildEvent, Boolean> filterChildEvent(final EventType type) {
     return new Func1<FirebaseChildEvent, Boolean>() {
       @Override public Boolean call(FirebaseChildEvent firebaseChildEvent) {
         return firebaseChildEvent.getEventType() == type;
       }
     };
-  }
-
-  /**
-   * This method add to subsriber the proper error according to the
-   *
-   * @param subscriber {@link rx.Subscriber}
-   * @param error {@link DatabaseError}
-   * @param <T> generic subscriber
-   */
-  private static <T> void attachErrorHandler(Subscriber<T> subscriber, DatabaseError error) {
-    switch (error.getCode()) {
-      case DatabaseError.INVALID_TOKEN:
-        subscriber.onError(new FirebaseInvalidTokenException(error.getMessage()));
-        break;
-      case DatabaseError.EXPIRED_TOKEN:
-        subscriber.onError(new FirebaseExpiredTokenException(error.getMessage()));
-        break;
-      case DatabaseError.NETWORK_ERROR:
-        subscriber.onError(new FirebaseNetworkErrorException(error.getMessage()));
-        break;
-      case DatabaseError.PERMISSION_DENIED:
-        subscriber.onError(new FirebasePermissionDeniedException(error.getMessage()));
-        break;
-      case DatabaseError.OPERATION_FAILED:
-        subscriber.onError(new FirebaseOperationFailedException(error.getMessage()));
-        break;
-      default:
-        subscriber.onError(new FirebaseGeneralException(error.getMessage()));
-    }
   }
 }

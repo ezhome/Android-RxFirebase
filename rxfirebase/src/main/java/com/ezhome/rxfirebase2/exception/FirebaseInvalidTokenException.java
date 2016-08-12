@@ -13,28 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ezhome.rxfirebase.exception;
-
-import com.ezhome.rxfirebase.RxFirebase;
+package com.ezhome.rxfirebase2.exception;
 
 /**
- * Generic exception for {@link RxFirebase}
+ * Raised when the specified authentication token is invalid.
  */
-public class FirebaseGeneralException extends Exception {
+public class FirebaseInvalidTokenException extends Exception {
 
-  public FirebaseGeneralException() {
+  public FirebaseInvalidTokenException() {
     super();
   }
 
-  public FirebaseGeneralException(String detailMessage) {
+  public FirebaseInvalidTokenException(String detailMessage) {
     super(detailMessage);
   }
 
-  public FirebaseGeneralException(String detailMessage, Throwable throwable) {
+  public FirebaseInvalidTokenException(String detailMessage, Throwable throwable) {
     super(detailMessage, throwable);
   }
 
-  public FirebaseGeneralException(Throwable throwable) {
+  public FirebaseInvalidTokenException(Throwable throwable) {
     super(throwable);
   }
 }

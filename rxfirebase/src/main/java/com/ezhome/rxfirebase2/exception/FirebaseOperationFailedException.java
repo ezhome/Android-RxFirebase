@@ -13,15 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ezhome.rxfirebase;
+package com.ezhome.rxfirebase2.exception;
 
-import android.app.Application;
-import com.firebase.client.Firebase;
+/**
+ * This exception occurred when an operation has been failed
+ */
+public class FirebaseOperationFailedException extends Exception {
 
-public class ApplicationStub extends Application {
+  public FirebaseOperationFailedException() {
+    super();
+  }
 
-  @Override public void onCreate() {
-    super.onCreate();
-    Firebase.setAndroidContext(this);
+  public FirebaseOperationFailedException(String detailMessage) {
+    super(detailMessage);
+  }
+
+  public FirebaseOperationFailedException(String detailMessage, Throwable throwable) {
+    super(detailMessage, throwable);
+  }
+
+  public FirebaseOperationFailedException(Throwable throwable) {
+    super(throwable);
   }
 }

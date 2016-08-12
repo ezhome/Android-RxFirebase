@@ -13,26 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ezhome.rxfirebase.exception;
+package com.ezhome.rxfirebase2.exception;
 
 /**
- * This exception occurred when an operation has been failed
+ * Raised when the Firebase returns a permission
+ * denied error
  */
-public class FirebaseOperationFailedException extends Exception {
+public class FirebasePermissionDeniedException extends Exception {
 
-  public FirebaseOperationFailedException() {
+  public FirebasePermissionDeniedException() {
     super();
   }
 
-  public FirebaseOperationFailedException(String detailMessage) {
+  public FirebasePermissionDeniedException(String detailMessage) {
     super(detailMessage);
   }
 
-  public FirebaseOperationFailedException(String detailMessage, Throwable throwable) {
+  public FirebasePermissionDeniedException(String detailMessage, Throwable throwable) {
     super(detailMessage, throwable);
   }
 
-  public FirebaseOperationFailedException(Throwable throwable) {
+  public FirebasePermissionDeniedException(Throwable throwable) {
     super(throwable);
   }
 }

@@ -13,12 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ezhome.rxfirebase;
+package com.ezhome.rxfirebase2.exception;
 
 /**
- * Standard firebase nodes
+ * This exception occurred when something went wrong during
+ * the logout process
  */
-public final class FirebaseDatabaseNodes {
+public class FirebaseSignOutException extends Exception {
 
-  public static final String NODE_CONNECTED = "/.info/connected";
+  public FirebaseSignOutException() {
+    super();
+  }
+
+  public FirebaseSignOutException(String detailMessage) {
+    super(detailMessage);
+  }
+
+  public FirebaseSignOutException(String detailMessage, Throwable throwable) {
+    super(detailMessage, throwable);
+  }
+
+  public FirebaseSignOutException(Throwable throwable) {
+    super(throwable);
+  }
 }

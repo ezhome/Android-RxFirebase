@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ezhome.rxfirebase;
+package com.ezhome.rxfirebase2;
 
 import com.google.firebase.database.DataSnapshot;
 

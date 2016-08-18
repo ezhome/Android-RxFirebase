@@ -17,6 +17,11 @@ Contents
 
 Usage
 -----
+
+Currently library supports for new Google Firebase the followings:
+- Firebase Authentication `RxFirebaseAuth`
+- Firebase Database `RxFirebaseDatabase`
+
 #### Use the project with your own Firebase instance
 
 1. Clone this repository.
@@ -36,7 +41,7 @@ Usage
 
 ```java
     final Firebase firebaseRef = new Firebase("https://docs-examples.firebaseio.com/web/saving-data/fireblog/posts");
-    RxFirebase.getInstance().observeValueEvent(firebaseRef).subscribe(new GetPostsSubscriber());
+    RxFirebaseDatabase.getInstance().observeValueEvent(firebaseRef).subscribe(new GetPostsSubscriber());
   
     private final class GetPostsSubscriber extends Subscriber<DataSnapshot> {
       @Override public void onCompleted() {
@@ -65,7 +70,7 @@ Download
 The project is available on jCenter. In your app build.gradle (or explicit module) you must add this:
 ```
 dependencies {
-  compile 'com.ezhome:rxfirebase:2.0.0'
+  compile 'com.ezhome:rxfirebase:2.0.0-alpha1'
 }
 ```
 

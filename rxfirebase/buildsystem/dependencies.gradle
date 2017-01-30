@@ -1,19 +1,19 @@
 ext {
   // Android versions
   androidMinSdkVersion = 16
-  androidTargetSdkVersion = 23
-  androidCompileSdkVersion = 23
-  androidBuildToolsVersion = '23.0.3'
+  androidTargetSdkVersion = 25
+  androidCompileSdkVersion = 25
+  androidBuildToolsVersion = '25.0.0'
 
   //Firebase
-  firebaseVersion = '9.4.0'
+  firebaseVersion = '10.0.1'
 
   //RxJava
   rxJavaVersion = '1.1.9'
 
   //Test
   jUnitVersion = '4.12'
-  robolectricVersion = '3.0'
+  robolectricVersion = '3.1.2'
   assertJVersion = '1.7.1'
   mockitoVersion = '1.9.5'
 

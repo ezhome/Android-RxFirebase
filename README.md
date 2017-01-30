@@ -33,8 +33,8 @@ Currently library supports for new Google Firebase the followings:
 - Copy the generated *google-services.json* to the `app` folder of your project which will replace the mock google services json file.
 - You should be able to successfully sync the project now.
 - Copy contents of the `./server/database.rules.json` into your *Firebase -> Database -> Rules* and publish them.
-- Import data `./server/sample-data.json` into your *Firebase -> Database* 
-- Change the *Firebase URL path* in this [file](https://github.com/ezhome/Android-RxFirebase/blob/master/app/src/main/java/com/ezhome/rxfirebasedemo/PostsFragment.java#L30)  
+- Import data `./server/sample-data.json` into your *Firebase -> Database*
+- Change the *Firebase URL path* in this [file](https://github.com/ezhome/Android-RxFirebase/blob/master/app/src/main/java/com/ezhome/rxfirebasedemo/PostsFragment.java#L30)
 - Build and run the app.
 
 #### Example
@@ -42,17 +42,17 @@ Currently library supports for new Google Firebase the followings:
 ```java
     final Firebase firebaseRef = new Firebase("https://docs-examples.firebaseio.com/web/saving-data/fireblog/posts");
     RxFirebaseDatabase.getInstance().observeValueEvent(firebaseRef).subscribe(new GetPostsSubscriber());
-  
+
     private final class GetPostsSubscriber extends Subscriber<DataSnapshot> {
       @Override public void onCompleted() {
         PostsFragment.this.showProgress(false);
       }
-    
+
       @Override public void onError(Throwable e) {
         PostsFragment.this.showProgress(false);
         PostsFragment.this.showError(e.getMessage());
       }
-    
+
       @SuppressWarnings("unchecked") @Override public void onNext(DataSnapshot dataSnapshot) {
         List<BlogPostEntity> blogPostEntities = new ArrayList<>();
         for (DataSnapshot childDataSnapshot : dataSnapshot.getChildren()) {
@@ -61,7 +61,7 @@ Currently library supports for new Google Firebase the followings:
         PostsFragment.this.renderBlogPosts(blogPostEntities);
       }
     }
-```     
+```
 
 Check the example application [here](https://github.com/ezhome/Android-RxFirebase/tree/master/app)
 
@@ -70,7 +70,7 @@ Download
 The project is available on jCenter. In your app build.gradle (or explicit module) you must add this:
 ```
 dependencies {
-  compile 'com.ezhome:rxfirebase:2.0.0-alpha1'
+  compile 'com.ezhome:rxfirebase:2.0.1'
 }
 ```
 

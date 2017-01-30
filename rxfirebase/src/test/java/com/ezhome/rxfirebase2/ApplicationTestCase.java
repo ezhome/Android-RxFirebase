@@ -16,7 +16,6 @@
 package com.ezhome.rxfirebase2;
 
 import android.os.Build;
-import com.ezhome.rxfirebase.BuildConfig;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;

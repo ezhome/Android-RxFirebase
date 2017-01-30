@@ -53,7 +53,7 @@ public class RxFirebaseDatabase {
     return instance;
   }
 
-  private RxFirebaseDatabase() {
+  protected RxFirebaseDatabase() {
     //empty constructor, prevent initialisation
   }
 

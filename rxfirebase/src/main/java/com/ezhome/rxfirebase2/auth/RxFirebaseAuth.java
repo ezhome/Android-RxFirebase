@@ -56,7 +56,7 @@ public class RxFirebaseAuth {
     return instance;
   }
 
-  private RxFirebaseAuth(FirebaseAuth firebaseAuth) {
+  protected RxFirebaseAuth(FirebaseAuth firebaseAuth) {
     this.firebaseAuth = firebaseAuth;
   }
 

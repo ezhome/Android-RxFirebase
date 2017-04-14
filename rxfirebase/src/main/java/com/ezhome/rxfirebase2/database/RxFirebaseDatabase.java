@@ -24,6 +24,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import rx.Observable;
+import rx.Scheduler;
 import rx.Subscriber;
 import rx.functions.Action0;
 import rx.functions.Func1;
@@ -36,6 +37,11 @@ import rx.subscriptions.Subscriptions;
 public class RxFirebaseDatabase {
 
   public static volatile RxFirebaseDatabase instance;
+
+  /**
+   * Observe Scheduler
+   */
+  private Scheduler observeOnScheduler;
 
   /**
    * Singleton pattern
@@ -55,6 +61,16 @@ public class RxFirebaseDatabase {
 
   protected RxFirebaseDatabase() {
     //empty constructor, prevent initialisation
+  }
+
+  /**
+   * This method will set specific Scheduler on what values will be Observed on
+   *
+   * @param observeOnScheduler {@link Scheduler} for observed on
+   */
+  public RxFirebaseDatabase observeOn(Scheduler observeOnScheduler) {
+    this.observeOnScheduler = observeOnScheduler;
+    return this;
   }
 
   /**
@@ -83,7 +99,7 @@ public class RxFirebaseDatabase {
         });
         ref.setValue(object);
       }
-    });
+    }).compose(this.<String>applyScheduler());
   }
 
   /**
@@ -115,7 +131,7 @@ public class RxFirebaseDatabase {
           }
         }));
       }
-    });
+    }).compose(this.<DataSnapshot>applyScheduler());
   }
 
   /**
@@ -149,7 +165,7 @@ public class RxFirebaseDatabase {
           }
         }));
       }
-    });
+    }).compose(this.<DataSnapshot>applyScheduler());
   }
 
   /**
@@ -201,7 +217,7 @@ public class RxFirebaseDatabase {
           }
         }));
       }
-    });
+    }).compose(this.<FirebaseChildEvent>applyScheduler());
   }
 
   /**
@@ -259,6 +275,23 @@ public class RxFirebaseDatabase {
     return new Func1<FirebaseChildEvent, Boolean>() {
       @Override public Boolean call(FirebaseChildEvent firebaseChildEvent) {
         return firebaseChildEvent.getEventType() == type;
+      }
+    };
+  }
+
+  /**
+   * Function that receives the current Observable and should apply scheduler
+   *
+   * @param <T> source Observable
+   * @return an {@link rx.Observable} with new or the same observe on scheduler
+   */
+  @SuppressWarnings("unchecked") private <T> Observable.Transformer<T, T> applyScheduler() {
+    return new Observable.Transformer<T, T>() {
+      @Override public Observable<T> call(Observable<T> observable) {
+        if (observeOnScheduler != null) {
+          return observable.observeOn(observeOnScheduler);
+        }
+        return observable;
       }
     };
   }

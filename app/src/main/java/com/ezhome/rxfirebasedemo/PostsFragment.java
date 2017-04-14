@@ -28,8 +28,7 @@ import rx.Subscriber;
 public class PostsFragment extends Fragment {
 
   //For example purposes
-  private final DatabaseReference firebaseRef = FirebaseDatabase.getInstance()
-      .getReferenceFromUrl("https://<yourdomainname>.firebaseio.com/fireblog");
+  private final DatabaseReference firebaseRef = FirebaseDatabase.getInstance().getReference();
 
   //Adapter
   private BlogPostsAdapter blogPostsAdapter;

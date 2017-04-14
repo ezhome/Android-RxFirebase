@@ -65,6 +65,12 @@ Currently library supports for new Google Firebase the followings:
 
 Check the example application [here](https://github.com/ezhome/Android-RxFirebase/tree/master/app)
 
+You can change scheduler for observing values in a different thread
+
+#### Example 
+```
+ RxFirebaseDatabase.getInstance().observeOn(Schedulers.io());
+```
 Download
 --------
 The project is available on jCenter. In your app build.gradle (or explicit module) you must add this:

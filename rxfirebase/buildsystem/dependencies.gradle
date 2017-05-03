@@ -6,10 +6,10 @@ ext {
   androidBuildToolsVersion = '25.0.0'
 
   //Firebase
-  firebaseVersion = '10.0.1'
+  firebaseVersion = '10.2.4'
 
   //RxJava
-  rxJavaVersion = '1.1.9'
+  rxJavaVersion = '1.2.10'
 
   //Test
   jUnitVersion = '4.12'

@@ -1,12 +1,12 @@
 package com.ezhome.rxfirebasedemo;
 
-import android.app.Application;
+import android.support.multidex.MultiDexApplication;
 import com.google.firebase.database.FirebaseDatabase;
 
 /**
  *  Base application
  */
-public class BaseApplication extends Application {
+public class BaseApplication extends MultiDexApplication {
 
   @Override public void onCreate() {
     super.onCreate();

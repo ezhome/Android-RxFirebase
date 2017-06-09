@@ -67,7 +67,7 @@ Check the example application [here](https://github.com/ezhome/Android-RxFirebas
 
 You can change scheduler for observing values in a different thread
 
-#### Example 
+#### Example
 ```
  RxFirebaseDatabase.getInstance().observeOn(Schedulers.io());
 ```

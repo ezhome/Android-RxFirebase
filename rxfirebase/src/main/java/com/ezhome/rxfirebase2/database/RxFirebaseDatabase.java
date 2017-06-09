@@ -23,6 +23,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import java.util.Map;
 import rx.Observable;
 import rx.Scheduler;
 import rx.Subscriber;
@@ -67,6 +68,7 @@ public class RxFirebaseDatabase {
    * This method will set specific Scheduler on what values will be Observed on
    *
    * @param observeOnScheduler {@link Scheduler} for observed on
+   * @return {@link RxFirebaseDatabase}
    */
   public RxFirebaseDatabase observeOn(Scheduler observeOnScheduler) {
     this.observeOnScheduler = observeOnScheduler;
@@ -77,16 +79,16 @@ public class RxFirebaseDatabase {
    * This methods observes data saving with push in order to generate the key
    * automatically according to Firebase hashing key rules.
    *
-   * @param firebaseRef {@link Query} this is reference of a Firebase Query
+   * @param reference {@link Query} this is reference of a Firebase Query
    * @param object {@link Object} whatever object we want to save
    * @return an {@link rx.Observable} of the generated key after
    * the object persistence
    */
-  public Observable<String> observeSetValuePush(final DatabaseReference firebaseRef,
+  public Observable<String> observeSetValuePush(final DatabaseReference reference,
       final Object object) {
     return Observable.create(new Observable.OnSubscribe<String>() {
       @Override public void call(final Subscriber<? super String> subscriber) {
-        final DatabaseReference ref = firebaseRef.push();
+        final DatabaseReference ref = reference.push();
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
           @Override public void onDataChange(DataSnapshot dataSnapshot) {
             subscriber.onNext(ref.getKey());
@@ -98,6 +100,75 @@ public class RxFirebaseDatabase {
           }
         });
         ref.setValue(object);
+      }
+    }).compose(this.<String>applyScheduler());
+  }
+
+  /**
+   * This methods observes data saving under the provided {@link DatabaseReference}
+   *
+   * @param reference {@link DatabaseReference} this is reference of a Firebase Query
+   * @param object {@link Object} whatever object we want to save
+   * @return an {@link rx.Observable} of the generated key after
+   * the object persistence
+   */
+  public Observable<String> observeSetValue(final DatabaseReference reference,
+      final Object object) {
+    return Observable.create(new Observable.OnSubscribe<String>() {
+      @Override public void call(final Subscriber<? super String> subscriber) {
+        final ValueEventListener listener = new ValueEventListener() {
+          @Override public void onDataChange(DataSnapshot dataSnapshot) {
+            subscriber.onNext(reference.getKey());
+            subscriber.onCompleted();
+          }
+
+          @Override public void onCancelled(DatabaseError error) {
+            FirebaseDatabaseErrorFactory.buildError(subscriber, error);
+          }
+        };
+        reference.addListenerForSingleValueEvent(listener);
+        reference.setValue(object);
+
+        // When the subscription is cancelled, remove the listener
+        subscriber.add(Subscriptions.create(new Action0() {
+          @Override public void call() {
+            reference.removeEventListener(listener);
+          }
+        }));
+      }
+    }).compose(this.<String>applyScheduler());
+  }
+
+  /**
+   * This methods observes children update for provided {@link DatabaseReference}
+   *
+   * @param reference {@link DatabaseReference}
+   * @param data {@link Map} the children items which should be updated
+   * @return {@link rx.Observable} which emits the key of reference {@link String}
+   */
+  public Observable<String> observeUpdateChildren(final DatabaseReference reference,
+      final Map<String, Object> data) {
+    return Observable.create(new Observable.OnSubscribe<String>() {
+      @Override public void call(final Subscriber<? super String> subscriber) {
+        final ValueEventListener listener = new ValueEventListener() {
+          @Override public void onDataChange(DataSnapshot dataSnapshot) {
+            subscriber.onNext(reference.getKey());
+            subscriber.onCompleted();
+          }
+
+          @Override public void onCancelled(DatabaseError databaseError) {
+            FirebaseDatabaseErrorFactory.buildError(subscriber, databaseError);
+          }
+        };
+        reference.addListenerForSingleValueEvent(listener);
+        reference.updateChildren(data);
+
+        // When the subscription is cancelled, remove the listener
+        subscriber.add(Subscriptions.create(new Action0() {
+          @Override public void call() {
+            reference.removeEventListener(listener);
+          }
+        }));
       }
     }).compose(this.<String>applyScheduler());
   }

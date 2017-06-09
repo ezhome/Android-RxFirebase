@@ -17,8 +17,10 @@ package com.ezhome.rxfirebase2;
 
 import com.ezhome.rxfirebase2.database.RxFirebaseDatabase;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 import java.util.Collections;
+import java.util.Map;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -30,14 +32,18 @@ import rx.Observable;
 import rx.observers.TestSubscriber;
 import rx.schedulers.Schedulers;
 
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 public class RxFirebaseDatabaseTest extends ApplicationTestCase {
 
+  private static final String FAKE_RESPONSE = "key";
+
   private RxFirebaseDatabase rxFirebase;
   private RxFirebaseDatabase spyRxFirebase;
   @Mock private Query mockRef;
+  @Mock private DatabaseReference mockReference;
   @Mock private DataSnapshot mockDataSnapshot;
   @Mock private FirebaseChildEvent mockFirebaseChildEvent;
 
@@ -54,17 +60,37 @@ public class RxFirebaseDatabaseTest extends ApplicationTestCase {
     spyRxFirebase = null;
   }
 
-  @Test public void testObserveValue() throws InterruptedException {
-    when(spyRxFirebase.observeValueEvent(mockRef)).thenReturn(Observable.just(mockDataSnapshot));
+  @Test public void testObserveSetValue() throws InterruptedException {
+    final Object mockData = mock(Object.class);
+    when(spyRxFirebase.observeSetValue(mockReference, mockData)).thenReturn(
+        Observable.just(FAKE_RESPONSE));
 
-    TestSubscriber<DataSnapshot> testSubscriber = new TestSubscriber<>();
-    spyRxFirebase.observeValueEvent(mockRef)
+    TestSubscriber<String> testSubscriber = new TestSubscriber<>();
+    spyRxFirebase.observeSetValue(mockReference, mockData)
         .subscribeOn(Schedulers.immediate())
         .subscribe(testSubscriber);
 
     testSubscriber.assertNoErrors();
     testSubscriber.assertValueCount(1);
-    testSubscriber.assertReceivedOnNext(Collections.singletonList(mockDataSnapshot));
+    testSubscriber.assertValue(FAKE_RESPONSE);
+    testSubscriber.assertCompleted();
+    testSubscriber.unsubscribe();
+  }
+
+  @SuppressWarnings("unchecked")
+  @Test public void testObserveUpdateChildren() throws InterruptedException {
+    final Map<String,Object> mockData = mock(Map.class);
+    when(spyRxFirebase.observeUpdateChildren(mockReference, mockData)).thenReturn(
+        Observable.just(FAKE_RESPONSE));
+
+    TestSubscriber<String> testSubscriber = new TestSubscriber<>();
+    spyRxFirebase.observeUpdateChildren(mockReference, mockData)
+        .subscribeOn(Schedulers.immediate())
+        .subscribe(testSubscriber);
+
+    testSubscriber.assertNoErrors();
+    testSubscriber.assertValueCount(1);
+    testSubscriber.assertValue(FAKE_RESPONSE);
     testSubscriber.assertCompleted();
     testSubscriber.unsubscribe();
   }

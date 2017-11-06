@@ -66,7 +66,7 @@ public class PostsFragment extends Fragment {
    */
   private void loadPosts() {
     PostsFragment.this.showProgress(true);
-    RxFirebaseDatabase.getInstance().observeValueEvent(firebaseRef).subscribe(new GetPostsSubscriber());
+    RxFirebaseDatabase.getInstance().observeValueEvent(firebaseRef.child("fireblog")).subscribe(new GetPostsSubscriber());
   }
 
   /**

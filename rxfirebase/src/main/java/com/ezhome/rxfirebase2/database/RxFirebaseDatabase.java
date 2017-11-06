@@ -24,12 +24,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import java.util.Map;
+import rx.Emitter;
 import rx.Observable;
 import rx.Scheduler;
-import rx.Subscriber;
-import rx.functions.Action0;
+import rx.functions.Action1;
+import rx.functions.Cancellable;
 import rx.functions.Func1;
-import rx.subscriptions.Subscriptions;
 
 /**
  * The class is used as Decorator to
@@ -86,22 +86,22 @@ public class RxFirebaseDatabase {
    */
   public Observable<String> observeSetValuePush(final DatabaseReference reference,
       final Object object) {
-    return Observable.create(new Observable.OnSubscribe<String>() {
-      @Override public void call(final Subscriber<? super String> subscriber) {
+    return Observable.create(new Action1<Emitter<String>>() {
+      @Override public void call(final Emitter<String> emitter) {
         final DatabaseReference ref = reference.push();
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
           @Override public void onDataChange(DataSnapshot dataSnapshot) {
-            subscriber.onNext(ref.getKey());
-            subscriber.onCompleted();
+            emitter.onNext(ref.getKey());
+            emitter.onCompleted();
           }
 
           @Override public void onCancelled(DatabaseError error) {
-            FirebaseDatabaseErrorFactory.buildError(subscriber, error);
+            FirebaseDatabaseErrorFactory.buildError(emitter, error);
           }
         });
         ref.setValue(object);
       }
-    }).compose(this.<String>applyScheduler());
+    }, Emitter.BackpressureMode.LATEST).compose(this.<String>applyScheduler());
   }
 
   /**
@@ -114,29 +114,29 @@ public class RxFirebaseDatabase {
    */
   public Observable<String> observeSetValue(final DatabaseReference reference,
       final Object object) {
-    return Observable.create(new Observable.OnSubscribe<String>() {
-      @Override public void call(final Subscriber<? super String> subscriber) {
+    return Observable.create(new Action1<Emitter<String>>() {
+      @Override public void call(final Emitter<String> emitter) {
         final ValueEventListener listener = new ValueEventListener() {
           @Override public void onDataChange(DataSnapshot dataSnapshot) {
-            subscriber.onNext(reference.getKey());
-            subscriber.onCompleted();
+            emitter.onNext(reference.getKey());
+            emitter.onCompleted();
           }
 
           @Override public void onCancelled(DatabaseError error) {
-            FirebaseDatabaseErrorFactory.buildError(subscriber, error);
+            FirebaseDatabaseErrorFactory.buildError(emitter, error);
           }
         };
         reference.addListenerForSingleValueEvent(listener);
         reference.setValue(object);
 
         // When the subscription is cancelled, remove the listener
-        subscriber.add(Subscriptions.create(new Action0() {
-          @Override public void call() {
+        emitter.setCancellation(new Cancellable() {
+          @Override public void cancel() throws Exception {
             reference.removeEventListener(listener);
           }
-        }));
+        });
       }
-    }).compose(this.<String>applyScheduler());
+    }, Emitter.BackpressureMode.LATEST);
   }
 
   /**
@@ -148,29 +148,29 @@ public class RxFirebaseDatabase {
    */
   public Observable<String> observeUpdateChildren(final DatabaseReference reference,
       final Map<String, Object> data) {
-    return Observable.create(new Observable.OnSubscribe<String>() {
-      @Override public void call(final Subscriber<? super String> subscriber) {
+    return Observable.create(new Action1<Emitter<String>>() {
+      @Override public void call(final Emitter<String> emitter) {
         final ValueEventListener listener = new ValueEventListener() {
           @Override public void onDataChange(DataSnapshot dataSnapshot) {
-            subscriber.onNext(reference.getKey());
-            subscriber.onCompleted();
+            emitter.onNext(reference.getKey());
+            emitter.onCompleted();
           }
 
           @Override public void onCancelled(DatabaseError databaseError) {
-            FirebaseDatabaseErrorFactory.buildError(subscriber, databaseError);
+            FirebaseDatabaseErrorFactory.buildError(emitter, databaseError);
           }
         };
         reference.addListenerForSingleValueEvent(listener);
         reference.updateChildren(data);
 
         // When the subscription is cancelled, remove the listener
-        subscriber.add(Subscriptions.create(new Action0() {
-          @Override public void call() {
+        emitter.setCancellation(new Cancellable() {
+          @Override public void cancel() throws Exception {
             reference.removeEventListener(listener);
           }
-        }));
+        });
       }
-    }).compose(this.<String>applyScheduler());
+    }, Emitter.BackpressureMode.LATEST).compose(this.<String>applyScheduler());
   }
 
   /**
@@ -182,27 +182,41 @@ public class RxFirebaseDatabase {
    * @return an {@link rx.Observable} of datasnapshot to use
    */
   public Observable<DataSnapshot> observeValueEvent(final Query firebaseRef) {
-    return Observable.create(new Observable.OnSubscribe<DataSnapshot>() {
-      @Override public void call(final Subscriber<? super DataSnapshot> subscriber) {
+    return observeValueEvent(firebaseRef, Emitter.BackpressureMode.BUFFER);
+  }
+
+  /**
+   * This methods observes a firebase query and returns back
+   * an Observable of the {@link DataSnapshot}
+   * when the firebase client uses a {@link ValueEventListener}
+   *
+   * @param firebaseRef {@link Query} this is reference of a Firebase Query
+   * @param backPressureMode {@link Emitter.BackpressureMode} backpressure mode
+   * @return an {@link rx.Observable} of datasnapshot to use
+   */
+  public Observable<DataSnapshot> observeValueEvent(final Query firebaseRef,
+      Emitter.BackpressureMode backPressureMode) {
+    return Observable.create(new Action1<Emitter<DataSnapshot>>() {
+      @Override public void call(final Emitter<DataSnapshot> emitter) {
         final ValueEventListener listener =
             firebaseRef.addValueEventListener(new ValueEventListener() {
               @Override public void onDataChange(DataSnapshot dataSnapshot) {
-                subscriber.onNext(dataSnapshot);
+                emitter.onNext(dataSnapshot);
               }
 
               @Override public void onCancelled(DatabaseError error) {
-                FirebaseDatabaseErrorFactory.buildError(subscriber, error);
+                FirebaseDatabaseErrorFactory.buildError(emitter, error);
               }
             });
 
         // When the subscription is cancelled, remove the listener
-        subscriber.add(Subscriptions.create(new Action0() {
-          @Override public void call() {
+        emitter.setCancellation(new Cancellable() {
+          @Override public void cancel() throws Exception {
             firebaseRef.removeEventListener(listener);
           }
-        }));
+        });
       }
-    }).compose(this.<DataSnapshot>applyScheduler());
+    }, backPressureMode).compose(this.<DataSnapshot>applyScheduler());
   }
 
   /**
@@ -214,29 +228,44 @@ public class RxFirebaseDatabase {
    * @return an {@link rx.Observable} of datasnapshot to use
    */
   public Observable<DataSnapshot> observeSingleValue(final Query firebaseRef) {
-    return Observable.create(new Observable.OnSubscribe<DataSnapshot>() {
-      @Override public void call(final Subscriber<? super DataSnapshot> subscriber) {
+    return observeSingleValue(firebaseRef, Emitter.BackpressureMode.BUFFER);
+  }
+
+  /**
+   * This methods observes a firebase query and returns back ONCE
+   * an Observable of the {@link DataSnapshot}
+   * when the firebase client uses a {@link ValueEventListener}
+   *
+   * @param firebaseRef {@link Query} this is reference of a Firebase Query
+   * @param backPressureMode {@link Emitter.BackpressureMode} backpressure mode
+   * @return an {@link rx.Observable} of datasnapshot to use
+   */
+  public Observable<DataSnapshot> observeSingleValue(final Query firebaseRef,
+      Emitter.BackpressureMode backPressureMode) {
+    return Observable.create(new Action1<Emitter<DataSnapshot>>() {
+      @Override public void call(final Emitter<DataSnapshot> emitter) {
         final ValueEventListener listener = new ValueEventListener() {
           @Override public void onDataChange(DataSnapshot dataSnapshot) {
-            subscriber.onNext(dataSnapshot);
-            subscriber.onCompleted();
+            emitter.onNext(dataSnapshot);
+            emitter.onCompleted();
           }
 
           @Override public void onCancelled(DatabaseError error) {
-            FirebaseDatabaseErrorFactory.buildError(subscriber, error);
+            FirebaseDatabaseErrorFactory.buildError(emitter, error);
           }
         };
 
         firebaseRef.addListenerForSingleValueEvent(listener);
 
         // When the subscription is cancelled, remove the listener
-        subscriber.add(Subscriptions.create(new Action0() {
-          @Override public void call() {
+        emitter.setCancellation(new Cancellable() {
+          @Override public void cancel() throws Exception {
             firebaseRef.removeEventListener(listener);
+
           }
-        }));
+        });
       }
-    }).compose(this.<DataSnapshot>applyScheduler());
+    }, backPressureMode).compose(this.<DataSnapshot>applyScheduler());
   }
 
   /**
@@ -249,46 +278,62 @@ public class RxFirebaseDatabase {
    * to use
    */
   public Observable<FirebaseChildEvent> observeChildEvent(final Query firebaseRef) {
-    return Observable.create(new Observable.OnSubscribe<FirebaseChildEvent>() {
-      @Override public void call(final Subscriber<? super FirebaseChildEvent> subscriber) {
+    return this.observeChildEvent(firebaseRef, Emitter.BackpressureMode.BUFFER);
+  }
+
+  /**
+   * This methods observes a firebase query and returns back
+   * an Observable of the {@link DataSnapshot}
+   * when the firebase client uses a {@link ChildEventListener}
+   *
+   * @param firebaseRef {@link Query} this is reference of a Firebase Query
+   * @param backPressureMode {@link Emitter.BackpressureMode} backpressure mode
+   * @return an {@link rx.Observable} of {@link FirebaseChildEvent}
+   * to use
+   */
+  public Observable<FirebaseChildEvent> observeChildEvent(final Query firebaseRef,
+      Emitter.BackpressureMode backPressureMode) {
+    return Observable.create(new Action1<Emitter<FirebaseChildEvent>>() {
+      @Override public void call(final Emitter<FirebaseChildEvent> emitter) {
         final ChildEventListener childEventListener =
             firebaseRef.addChildEventListener(new ChildEventListener() {
 
               @Override
               public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
-                subscriber.onNext(
+                emitter.onNext(
                     new FirebaseChildEvent(dataSnapshot, previousChildName, EventType.ADDED));
               }
 
               @Override
               public void onChildChanged(DataSnapshot dataSnapshot, String previousChildName) {
-                subscriber.onNext(
+                emitter.onNext(
                     new FirebaseChildEvent(dataSnapshot, previousChildName, EventType.CHANGED));
               }
 
               @Override public void onChildRemoved(DataSnapshot dataSnapshot) {
-                subscriber.onNext(new FirebaseChildEvent(dataSnapshot, EventType.REMOVED));
+                emitter.onNext(
+                    new FirebaseChildEvent(dataSnapshot, EventType.REMOVED));
               }
 
               @Override
               public void onChildMoved(DataSnapshot dataSnapshot, String previousChildName) {
-                subscriber.onNext(
+                emitter.onNext(
                     new FirebaseChildEvent(dataSnapshot, previousChildName, EventType.MOVED));
               }
 
               @Override public void onCancelled(DatabaseError error) {
-                FirebaseDatabaseErrorFactory.buildError(subscriber, error);
+                FirebaseDatabaseErrorFactory.buildError(emitter, error);
               }
             });
         // this is used to remove the listener when the subscriber is
         // cancelled (unsubscribe)
-        subscriber.add(Subscriptions.create(new Action0() {
-          @Override public void call() {
+        emitter.setCancellation(new Cancellable() {
+          @Override public void cancel() throws Exception {
             firebaseRef.removeEventListener(childEventListener);
           }
-        }));
+        });
       }
-    }).compose(this.<FirebaseChildEvent>applyScheduler());
+    }, backPressureMode).compose(this.<FirebaseChildEvent>applyScheduler());
   }
 
   /**

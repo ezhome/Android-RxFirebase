@@ -1,28 +1,42 @@
 {
   "project_info": {
-    "project_id": "mockproject-1234",
-    "project_number": "123456789000",
-    "name": "FirebaseQuickstarts",
-    "firebase_url": "https://mockproject-1234.firebaseio.com"
+    "project_number": "262311498471",
+    "firebase_url": "https://fir-quickstarts-a6494.firebaseio.com",
+    "project_id": "fir-quickstarts-a6494",
+    "storage_bucket": "fir-quickstarts-a6494.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:123456789000:android:f1bf012572b04063",
-        "client_id": "android:com.ezhome.rxfirebasedemo",
-        "client_type": 1,
+        "mobilesdk_app_id": "1:262311498471:android:c0c5789ae7945b59",
         "android_client_info": {
-          "package_name": "com.ezhome.rxfirebasedemo",
-          "certificate_hash": []
+          "package_name": "com.ezhome.rxfirebasedemo"
         }
       },
+      "oauth_client": [
+        {
+          "client_id": "262311498471-hu6pjbbkammkje369mpsslg849jtgmkq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": ""
+          "current_key": "AIzaSyCAWOuIzhXl9WHsIQkDMO537Xn7moH_ICg"
         }
-      ]
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
     }
   ],
-  "client_info": [],
-  "ARTIFACT_VERSION": "1"
+  "configuration_version": "1"
 }

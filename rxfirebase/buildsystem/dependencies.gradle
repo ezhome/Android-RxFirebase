@@ -9,7 +9,7 @@ ext {
   firebaseVersion = '11.0.0'
 
   //RxJava
-  rxJavaVersion = '1.1.9'
+  rxJavaVersion = '1.3.3'
 
   //Test
   jUnitVersion = '4.12'

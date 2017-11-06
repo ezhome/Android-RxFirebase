@@ -8,6 +8,7 @@ import com.ezhome.rxfirebase2.exception.FirebaseNetworkErrorException;
 import com.ezhome.rxfirebase2.exception.FirebaseOperationFailedException;
 import com.ezhome.rxfirebase2.exception.FirebasePermissionDeniedException;
 import com.google.firebase.database.DatabaseError;
+import rx.Emitter;
 import rx.Subscriber;
 
 /**
@@ -21,31 +22,31 @@ public class FirebaseDatabaseErrorFactory {
   }
 
   /**
-   * This method add to subsriber the proper error according to the
+   * This method add to emitter the proper error according to the
    *
-   * @param subscriber {@link rx.Subscriber}
+   * @param emitter {@link rx.Emitter}
    * @param error {@link DatabaseError}
    * @param <T> generic subscriber
    */
-  static <T> void buildError(Subscriber<T> subscriber, DatabaseError error) {
+  static <T> void buildError(Emitter<T> emitter, DatabaseError error) {
     switch (error.getCode()) {
       case DatabaseError.INVALID_TOKEN:
-        subscriber.onError(new FirebaseInvalidTokenException(error.getMessage()));
+        emitter.onError(new FirebaseInvalidTokenException(error.getMessage()));
         break;
       case DatabaseError.EXPIRED_TOKEN:
-        subscriber.onError(new FirebaseExpiredTokenException(error.getMessage()));
+        emitter.onError(new FirebaseExpiredTokenException(error.getMessage()));
         break;
       case DatabaseError.NETWORK_ERROR:
-        subscriber.onError(new FirebaseNetworkErrorException(error.getMessage()));
+        emitter.onError(new FirebaseNetworkErrorException(error.getMessage()));
         break;
       case DatabaseError.PERMISSION_DENIED:
-        subscriber.onError(new FirebasePermissionDeniedException(error.getMessage()));
+        emitter.onError(new FirebasePermissionDeniedException(error.getMessage()));
         break;
       case DatabaseError.OPERATION_FAILED:
-        subscriber.onError(new FirebaseOperationFailedException(error.getMessage()));
+        emitter.onError(new FirebaseOperationFailedException(error.getMessage()));
         break;
       default:
-        subscriber.onError(new FirebaseGeneralException(error.getMessage()));
+        emitter.onError(new FirebaseGeneralException(error.getMessage()));
         break;
     }
   }

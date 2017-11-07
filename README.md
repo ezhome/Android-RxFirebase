@@ -76,7 +76,7 @@ Download
 The project is available on jCenter. In your app build.gradle (or explicit module) you must add this:
 ```
 dependencies {
-  compile 'com.ezhome:rxfirebase:2.2.2'
+  compile 'com.ezhome:rxfirebase:2.2.0'
 }
 ```
 
